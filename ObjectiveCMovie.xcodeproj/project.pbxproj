@@ -93,6 +93,32 @@
 			path = DetailsViewController;
 			sourceTree = "<group>";
 		};
+		7189605C27E9457A00526C14 /* AppDelegate */ = {
+			isa = PBXGroup;
+			children = (
+				808D529127E8F621008229E7 /* AppDelegate.h */,
+				808D529227E8F621008229E7 /* AppDelegate.m */,
+			);
+			path = AppDelegate;
+			sourceTree = "<group>";
+		};
+		7189605D27E9458700526C14 /* SceneDelegate */ = {
+			isa = PBXGroup;
+			children = (
+				808D529427E8F621008229E7 /* SceneDelegate.h */,
+				808D529527E8F621008229E7 /* SceneDelegate.m */,
+			);
+			path = SceneDelegate;
+			sourceTree = "<group>";
+		};
+		7189605E27E945A300526C14 /* main */ = {
+			isa = PBXGroup;
+			children = (
+				808D52A327E8F62B008229E7 /* main.m */,
+			);
+			path = main;
+			sourceTree = "<group>";
+		};
 		808D528527E8F621008229E7 = {
 			isa = PBXGroup;
 			children = (
@@ -126,11 +152,9 @@
 		808D52AA27E8F677008229E7 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				808D529127E8F621008229E7 /* AppDelegate.h */,
-				808D529227E8F621008229E7 /* AppDelegate.m */,
-				808D529427E8F621008229E7 /* SceneDelegate.h */,
-				808D529527E8F621008229E7 /* SceneDelegate.m */,
-				808D52A327E8F62B008229E7 /* main.m */,
+				7189605C27E9457A00526C14 /* AppDelegate */,
+				7189605D27E9458700526C14 /* SceneDelegate */,
+				7189605E27E945A300526C14 /* main */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -138,8 +162,8 @@
 		808D52AB27E8F686008229E7 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				808D52B227E8FB31008229E7 /* Movie.m */,
 				808D52B427E8FB3C008229E7 /* Movie.h */,
+				808D52B227E8FB31008229E7 /* Movie.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";

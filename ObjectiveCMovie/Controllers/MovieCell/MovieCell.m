@@ -9,7 +9,6 @@
 
 @implementation MovieCell
 
-
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
