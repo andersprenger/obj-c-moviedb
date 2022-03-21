@@ -10,6 +10,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface HeaderCell : UITableViewCell
+@property (weak, nonatomic) IBOutlet UILabel *title;
 
 @end
 
