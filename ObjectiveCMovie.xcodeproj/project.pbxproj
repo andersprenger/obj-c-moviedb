@@ -15,6 +15,7 @@
 		808D52A127E8F62B008229E7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 808D529F27E8F62B008229E7 /* LaunchScreen.storyboard */; };
 		808D52A427E8F62B008229E7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 808D52A327E8F62B008229E7 /* main.m */; };
 		808D52B027E8F7E7008229E7 /* MovieDBService.m in Sources */ = {isa = PBXBuildFile; fileRef = 808D52AF27E8F7E7008229E7 /* MovieDBService.m */; };
+		808D52B327E8FB31008229E7 /* Movie.m in Sources */ = {isa = PBXBuildFile; fileRef = 808D52B227E8FB31008229E7 /* Movie.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,8 @@
 		808D52A327E8F62B008229E7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		808D52AF27E8F7E7008229E7 /* MovieDBService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MovieDBService.m; sourceTree = "<group>"; };
 		808D52B127E8F803008229E7 /* MovieDBService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MovieDBService.h; sourceTree = "<group>"; };
+		808D52B227E8FB31008229E7 /* Movie.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Movie.m; sourceTree = "<group>"; };
+		808D52B427E8FB3C008229E7 /* Movie.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Movie.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +93,8 @@
 		808D52AB27E8F686008229E7 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				808D52B227E8FB31008229E7 /* Movie.m */,
+				808D52B427E8FB3C008229E7 /* Movie.h */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -191,6 +196,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				808D52B327E8FB31008229E7 /* Movie.m in Sources */,
 				808D52B027E8F7E7008229E7 /* MovieDBService.m in Sources */,
 				808D529927E8F621008229E7 /* ViewController.m in Sources */,
 				808D529327E8F621008229E7 /* AppDelegate.m in Sources */,
