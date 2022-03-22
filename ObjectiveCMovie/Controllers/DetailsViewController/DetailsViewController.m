@@ -6,6 +6,8 @@
 //
 
 #import "DetailsViewController.h"
+#import "Movie.h"
+#import "MovieDBService.h"
 
 @interface DetailsViewController ()
 
@@ -13,20 +15,30 @@
 
 @implementation DetailsViewController
 
+// MARK: - Lifecycle
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.title = @"Movie Detail";
     self.view.backgroundColor = UIColor.secondarySystemBackgroundColor;
-    // Do any additional setup after loading the view.
+    
+    [self fillDetailsWithMovie:self.movie];
+    
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+// MARK: - Fill data
+- (void)fillDetailsWithMovie:(Movie *)movie {
+    
+    /// 1. Configure texts
+    self.movieTitle.text = movie.title;
+    self.overview.text = movie.overview;
+    
+    /// 2. Parsing float to text
+    float roundRatingFloat = roundf(10 * movie.rating.floatValue) / 10;
+    NSString *roundedRatingString = [NSString stringWithFormat:@"%.01f",roundRatingFloat];
+    self.rating.text = roundedRatingString;
+    
 }
-*/
+
 
 @end

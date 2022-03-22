@@ -6,6 +6,7 @@
 //
 
 #import "MoviesTableViewController.h"
+#import "DetailsViewController.h"
 #import "MovieDBService.h"
 #import "MovieCell.h"
 #import "Movie.h"
@@ -171,12 +172,8 @@
         movies = self.searchedMovies;
     } else {
         switch (indexPath.section) {
-            case 0:
-                NSLog(@">>>>> 0");
-                movies = self.popularMovies;
-            case 1:
-                NSLog(@">>>>> 1");
-                movies = self.nowPlayingMovies;
+            case 0: movies = self.popularMovies;
+            case 1: movies = self.nowPlayingMovies;
         }
     }
     Movie *movie = movies[indexPath.row];
@@ -187,8 +184,28 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSMutableArray *movies;
+    
+    if (self.shouldDisplaySearch) {
+        movies = self.searchedMovies;
+    } else {
+        switch (indexPath.section) {
+            case 0: movies = self.popularMovies;
+            case 1: movies = self.nowPlayingMovies;
+        }
+    }
+    Movie *selectedMovie = movies[indexPath.row];
+    self.selectedMovie = selectedMovie;
     [self performSegueWithIdentifier:@"show-details" sender: self];
 }
+
+// MARK: - Prepare for Segue
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    DetailsViewController *movieDetailViewController = [segue destinationViewController];
+    movieDetailViewController.movie = self.selectedMovie;
+}
+
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
