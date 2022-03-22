@@ -14,6 +14,9 @@
 @property (strong, nonatomic) NSMutableArray<Movie *> *popularMovies;
 @property (strong, nonatomic) Movie *selectedMovie;
 
+@property (strong, nonatomic) UISearchController *searchBarController;
+@property (nonatomic) BOOL showldDisplaySearch;
+
 @end
 
 @implementation MoviesTableViewController
@@ -29,14 +32,32 @@
     
     self.title = @"Movies";
     self.navigationController.navigationBar.prefersLargeTitles = YES;
+    self.view.backgroundColor = UIColor.secondarySystemBackgroundColor;
+    
+    [self setupSearchBar];
     
     [self loadMovies];
 }
 
 #pragma mark - Table view data source
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (self.showldDisplaySearch) {
+        return @"Results";
+    } else {
+        switch (section) {
+            case 0:
+                return @"Popular Movies";
+            case 1:
+                return @"Now Playing";
+            default:
+                return @"";
+        }
+    }
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1; // MovieCell & HeaderCell
+    return 2; // MovieCell & HeaderCell
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -44,12 +65,34 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MovieCell" forIndexPath:indexPath];
     
     // Configure the cell...
     
     return cell;
 }
+
+- (void)setupSearchBar {
+    /// 1. Create searchbar
+    self.searchBarController = UISearchController.new;
+    
+    /// 2. Sets searchbar appearence and behaiviour
+    [self.searchBarController.searchBar sizeToFit];
+    self.searchBarController.searchBar.searchTextField.backgroundColor = UIColor.quaternarySystemFillColor;
+    self.searchBarController.obscuresBackgroundDuringPresentation = false;
+    self.searchBarController.hidesNavigationBarDuringPresentation = true;
+    self.searchBarController.searchBar.searchTextField.clearButtonMode = UITextFieldViewModeNever;
+    self.searchBarController.searchBar.returnKeyType = UIReturnKeyDone;
+    
+    /// 3. Sets searchbar delegates
+    self.searchBarController.searchBar.delegate = self;
+    self.searchBarController.searchBar.searchTextField.delegate = self;
+    
+    /// 4. Add searchbar to navigation
+    self.navigationItem.searchController = self.searchBarController;
+}
+
 
 - (void)loadMovies {
     self.popularMovies = NSMutableArray.new;
