@@ -7,15 +7,19 @@
 
 #import "MoviesTableViewController.h"
 #import "MovieDBService.h"
+#import "MovieCell.h"
 #import "Movie.h"
 
 @interface MoviesTableViewController ()
 
 @property (strong, nonatomic) NSMutableArray<Movie *> *popularMovies;
+@property (strong, nonatomic) NSMutableArray<Movie *> *nowPlayingMovies;
+@property (strong, nonatomic) NSMutableArray<Movie *> *searchedMovies;
 @property (strong, nonatomic) Movie *selectedMovie;
 
 @property (strong, nonatomic) UISearchController *searchBarController;
-@property (nonatomic) BOOL showldDisplaySearch;
+@property (nonatomic) BOOL shouldDisplaySearch;
+@property (strong, nonatomic) NSURLSessionTask *currentSearchingTask;
 
 @end
 
@@ -69,6 +73,7 @@
 
 - (void)loadMovies {
     self.popularMovies = NSMutableArray.new;
+    self.nowPlayingMovies = NSMutableArray.new;
     
     dispatch_group_t group = dispatch_group_create();
     dispatch_group_enter(group);
@@ -76,12 +81,52 @@
         [self.popularMovies addObjectsFromArray:movies];
         dispatch_group_leave(group);
     }];
+    
+    dispatch_group_enter(group);
+    [MovieDBService fetchNowPlayingMoviesWithHandler:^(NSMutableArray *movies) {
+        [self.nowPlayingMovies addObjectsFromArray:movies];
+        dispatch_group_leave(group);
+    }];
+    
+    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.shouldDisplaySearch = NO;
+        [self.tableView reloadData];
+    });
 }
 
-#pragma mark - Table view data source
+- (void)searchForMovieWithQuery:(NSString *)query {
+    
+    [self.currentSearchingTask cancel];
+    
+    self.searchedMovies = NSMutableArray.new;
+    [self.searchBarController.searchBar setShowsCancelButton:YES animated:YES];
+    
+    self.currentSearchingTask = [MovieDBService searchForMovieWithQuery:query
+                                                          andHandler:^(NSMutableArray *movies) {
+        [self.searchedMovies addObjectsFromArray:movies];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.shouldDisplaySearch = YES;
+            [self.tableView reloadData];
+        });
+    }];
+}
+
+- (void)cancelSearching {
+    [self.currentSearchingTask cancel];
+    self.searchedMovies = NSMutableArray.new;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.shouldDisplaySearch = NO;
+        [self.tableView reloadData];
+    });
+    return;
+}
+
+//MARK: - Table view data source
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (self.showldDisplaySearch) {
+    if (self.shouldDisplaySearch) {
         return @"Results";
     } else {
         switch (section) {
@@ -96,18 +141,47 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2; // MovieCell & HeaderCell
+    if (self.shouldDisplaySearch)
+        return 1;
+    else
+        return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 10;
+    if (self.shouldDisplaySearch) {
+        return self.searchedMovies.count;
+    } else {
+        switch (section) {
+            case 0:
+                return self.popularMovies.count;
+            case 1:
+                return self.nowPlayingMovies.count;
+        }
+        return 0;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    MovieCell *cell = [tableView dequeueReusableCellWithIdentifier:[MovieCell identifier] forIndexPath:indexPath];
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MovieCell" forIndexPath:indexPath];
+    NSMutableArray *movies;
     
-    // Configure the cell...
+    if (self.shouldDisplaySearch) {
+        movies = self.searchedMovies;
+    } else {
+        switch (indexPath.section) {
+            case 0:
+                NSLog(@">>>>> 0");
+                movies = self.popularMovies;
+            case 1:
+                NSLog(@">>>>> 1");
+                movies = self.nowPlayingMovies;
+        }
+    }
+    Movie *movie = movies[indexPath.row];
+    
+    [cell configureMovieData:movie];
     
     return cell;
 }
@@ -158,5 +232,27 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+
+// MARK: - SearchBar Delegate
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    [self.searchBarController.searchBar setShowsCancelButton:YES animated:YES];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    [self.searchBarController.searchBar setShowsCancelButton:NO animated:YES];
+    self.searchBarController.searchBar.text = @"";
+    [self cancelSearching];
+    [searchBar resignFirstResponder];
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    if (searchText.length == 0) {
+        [self cancelSearching];
+        return;
+    }
+    
+    [self searchForMovieWithQuery:searchText];
+}
 
 @end

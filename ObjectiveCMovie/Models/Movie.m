@@ -16,8 +16,8 @@
     if(self) {
         NSString *title = dictionary[@"title"];
         NSString *overview = dictionary[@"overview"];
-        NSString *rating = dictionary[@"rating"];
-        NSString *urlImage = dictionary[@"urlImage"];
+        NSString *rating = dictionary[@"vote_average"];
+        NSString *urlImage = dictionary[@"poster_path"];
         
         self.title = title;
         self.overview = overview;

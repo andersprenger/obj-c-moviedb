@@ -20,10 +20,10 @@ typedef enum {
 
 @interface MovieDBService : NSObject
 + (void) fetchPopularMoviesWithHandler:(void (^)(NSMutableArray *))handler;
-+ (NSString *) searchMoviesWithQuery:(NSString *)query;
-//+ (void) fetchPopularMoviesWithHandler:(void (^)(NSMutableArray *))handler;
-//+ (void) fetchNowPlayingMoviesWithHandler:(void (^)(NSMutableArray *))handler;
++ (void) fetchNowPlayingMoviesWithHandler:(void (^)(NSMutableArray *))handler;
++ (NSString *) searchURLWithQuery:(NSString *)query;
+
 //+ (NSURLSessionTask *) fetchMovieImageDataFromPath:(NSString *)movieImagePath andSize:(ImageSize) imageSize andHandler:(void (^)(NSData *))handler;
-//+ (NSURLSessionTask *) searchMoviesWithQuery:(NSString *)query andHandler:(void (^)(NSMutableArray *))handler;
++ (NSURLSessionTask *) searchForMovieWithQuery:(NSString *)query andHandler:(void (^)(NSMutableArray *))handler;
 
 @end

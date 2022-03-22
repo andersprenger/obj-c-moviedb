@@ -7,8 +7,17 @@
 
 #import "MovieCell.h"
 
+@interface MovieCell()
+
+
+@end
+
 @implementation MovieCell
 
+// MARK: - Constants
++ (NSString *) identifier { return @"MovieCell"; }
+
+// MARK: - Lifecycle
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
@@ -18,6 +27,21 @@
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+
+- (void)configureMovieData:(Movie *)movie {
+    
+    /// 1. Configure texts
+    self.title.text = movie.title;
+    self.overview.text = movie.overview;
+    
+    /// 2. Parsing float to text
+    float roundRatingFloat = roundf(10 * movie.rating.floatValue) / 10;
+    NSString *roundedRatingString = [NSString stringWithFormat:@"%.01f",roundRatingFloat];
+    self.rating.text = roundedRatingString;
+    
+    
+    
 }
 
 @end

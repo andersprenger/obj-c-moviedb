@@ -10,6 +10,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MoviesTableViewController : UITableViewController
+<UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 
 @end
 
