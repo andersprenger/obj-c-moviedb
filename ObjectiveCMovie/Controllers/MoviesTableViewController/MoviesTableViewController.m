@@ -7,6 +7,7 @@
 
 #import "MoviesTableViewController.h"
 #import "MovieDBService.h"
+#import "MovieCell.h"
 #import "Movie.h"
 
 @interface MoviesTableViewController ()
@@ -44,9 +45,12 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MovieCell" forIndexPath:indexPath];
+    MovieCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MovieCell" forIndexPath:indexPath];
+    Movie *movie = [_popularMovies objectAtIndex:indexPath.row];
     
-    // Configure the cell...
+    cell.title.text = movie.title;
+    cell.rating.text = movie.rating;
+    cell.overview.text = movie.overview;
     
     return cell;
 }
