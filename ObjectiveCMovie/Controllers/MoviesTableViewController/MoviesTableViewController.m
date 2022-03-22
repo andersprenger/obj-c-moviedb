@@ -79,7 +79,8 @@
     dispatch_group_t group = dispatch_group_create();
     dispatch_group_enter(group);
     [MovieDBService fetchPopularMoviesWithHandler:^(NSMutableArray *movies) {
-        [self.popularMovies addObjectsFromArray:movies];
+        NSArray* slicedMoviesArray = [movies subarrayWithRange:NSMakeRange(0, 2)];
+        [self.popularMovies addObjectsFromArray:slicedMoviesArray];
         dispatch_group_leave(group);
     }];
     
@@ -105,6 +106,7 @@
     
     self.currentSearchingTask = [MovieDBService searchForMovieWithQuery:query
                                                           andHandler:^(NSMutableArray *movies) {
+        
         [self.searchedMovies addObjectsFromArray:movies];
         
         dispatch_async(dispatch_get_main_queue(), ^{
