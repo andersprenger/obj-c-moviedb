@@ -6,15 +6,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Movie"
 
 NS_ASSUME_NONNULL_BEGIN
 
+
+// MARK: - Outlets
 @interface MovieCell : UITableViewCell
 
 @property (weak, nonatomic) IBOutlet UILabel *title;
 @property (weak, nonatomic) IBOutlet UIImageView *poster;
 @property (weak, nonatomic) IBOutlet UILabel *rating;
 @property (weak, nonatomic) IBOutlet UILabel *overview;
+
+// MARK: - Method to configure movieData
+- (void)configureMovieData:(Movi)
 
 @end
 

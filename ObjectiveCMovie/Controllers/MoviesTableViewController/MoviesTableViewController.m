@@ -32,11 +32,50 @@
     
     self.title = @"Movies";
     self.navigationController.navigationBar.prefersLargeTitles = YES;
-    self.view.backgroundColor = UIColor.secondarySystemBackgroundColor;
+    
+    
+    [self setupLayout];
     
     [self setupSearchBar];
     
     [self loadMovies];
+}
+
+- (void)setupLayout {
+    self.view.backgroundColor = UIColor.secondarySystemBackgroundColor;
+
+}
+
+- (void)setupSearchBar {
+    /// 1. Create searchbar
+    self.searchBarController = UISearchController.new;
+    
+    /// 2. Sets searchbar appearence and behaiviour
+    [self.searchBarController.searchBar sizeToFit];
+    self.searchBarController.searchBar.searchTextField.backgroundColor = UIColor.quaternarySystemFillColor;
+    self.searchBarController.obscuresBackgroundDuringPresentation = false;
+    self.searchBarController.hidesNavigationBarDuringPresentation = true;
+    self.searchBarController.searchBar.searchTextField.clearButtonMode = UITextFieldViewModeNever;
+    self.searchBarController.searchBar.returnKeyType = UIReturnKeyDone;
+    
+    /// 3. Sets searchbar delegates
+    self.searchBarController.searchBar.delegate = self;
+    self.searchBarController.searchBar.searchTextField.delegate = self;
+    
+    /// 4. Add searchbar to navigation
+    self.navigationItem.searchController = self.searchBarController;
+}
+
+
+- (void)loadMovies {
+    self.popularMovies = NSMutableArray.new;
+    
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_group_enter(group);
+    [MovieDBService fetchPopularMoviesWithHandler:^(NSMutableArray *movies) {
+        [self.popularMovies addObjectsFromArray:movies];
+        dispatch_group_leave(group);
+    }];
 }
 
 #pragma mark - Table view data source
@@ -71,38 +110,6 @@
     // Configure the cell...
     
     return cell;
-}
-
-- (void)setupSearchBar {
-    /// 1. Create searchbar
-    self.searchBarController = UISearchController.new;
-    
-    /// 2. Sets searchbar appearence and behaiviour
-    [self.searchBarController.searchBar sizeToFit];
-    self.searchBarController.searchBar.searchTextField.backgroundColor = UIColor.quaternarySystemFillColor;
-    self.searchBarController.obscuresBackgroundDuringPresentation = false;
-    self.searchBarController.hidesNavigationBarDuringPresentation = true;
-    self.searchBarController.searchBar.searchTextField.clearButtonMode = UITextFieldViewModeNever;
-    self.searchBarController.searchBar.returnKeyType = UIReturnKeyDone;
-    
-    /// 3. Sets searchbar delegates
-    self.searchBarController.searchBar.delegate = self;
-    self.searchBarController.searchBar.searchTextField.delegate = self;
-    
-    /// 4. Add searchbar to navigation
-    self.navigationItem.searchController = self.searchBarController;
-}
-
-
-- (void)loadMovies {
-    self.popularMovies = NSMutableArray.new;
-    
-    dispatch_group_t group = dispatch_group_create();
-    dispatch_group_enter(group);
-    [MovieDBService fetchPopularMoviesWithHandler:^(NSMutableArray *movies) {
-        [self.popularMovies addObjectsFromArray:movies];
-        dispatch_group_leave(group);
-    }];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

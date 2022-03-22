@@ -75,6 +75,12 @@
                                                 <constraint firstAttribute="width" constant="79" id="aeM-GH-DDa"/>
                                                 <constraint firstAttribute="height" constant="118" id="pyU-DM-N4E"/>
                                             </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                    <integer key="value" value="8"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="boolean" keyPath="clipsToBounds" value="YES"/>
+                                            </userDefinedRuntimeAttributes>
                                         </imageView>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="V7t-TM-LbW">
                                             <rect key="frame" x="109" y="11" width="290" height="116"/>
@@ -169,6 +175,12 @@
                                                     <constraint firstAttribute="width" constant="128" id="Byn-8d-AXm"/>
                                                     <constraint firstAttribute="height" constant="194" id="Jhc-CH-Xxc"/>
                                                 </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="8"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="clipsToBounds" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
                                             </imageView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="9x8-eJ-PzM">
                                                 <rect key="frame" x="163" y="103" width="237" height="96"/>
