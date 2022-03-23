@@ -191,8 +191,8 @@
 		808D52AE27E8F6A0008229E7 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
-				808D52AF27E8F7E7008229E7 /* MovieDBService.m */,
 				808D52B127E8F803008229E7 /* MovieDBService.h */,
+				808D52AF27E8F7E7008229E7 /* MovieDBService.m */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
