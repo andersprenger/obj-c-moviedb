@@ -18,11 +18,13 @@
         NSString *overview = dictionary[@"overview"];
         NSString *rating = dictionary[@"vote_average"];
         NSString *urlImage = dictionary[@"poster_path"];
+        NSArray *genres = dictionary[@"genre_ids"];
         
         self.title = title;
         self.overview = overview;
         self.rating = rating;
         self.urlImage = urlImage;
+        self.genres = genres;
     }
 
     return self;

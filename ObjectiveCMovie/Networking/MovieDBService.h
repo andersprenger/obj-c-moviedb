@@ -22,7 +22,7 @@ typedef enum {
 + (void) fetchPopularMoviesWithHandler:(void (^)(NSMutableArray *))handler;
 + (void) fetchNowPlayingMoviesWithHandler:(void (^)(NSMutableArray *))handler;
 + (NSString *) searchURLWithQuery:(NSString *)query;
-
++ (NSString *) fetchGenres: (Movie *) movie;
 //+ (NSURLSessionTask *) fetchMovieImageDataFromPath:(NSString *)movieImagePath andSize:(ImageSize) imageSize andHandler:(void (^)(NSData *))handler;
 + (NSURLSessionTask *) searchForMovieWithQuery:(NSString *)query andHandler:(void (^)(NSMutableArray *))handler;
 

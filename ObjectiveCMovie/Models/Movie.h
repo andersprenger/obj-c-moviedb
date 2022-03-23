@@ -13,6 +13,7 @@
 @property (strong, nonatomic) NSString *overview;
 @property (strong, nonatomic) NSString *rating;
 @property (strong, nonatomic) NSString *urlImage;
+@property (strong, nonatomic) NSArray *genres;
 
 - (id)initWithDictionary:(NSDictionary *) dictionary;
 
