@@ -22,9 +22,9 @@ NSString *searchUrl = @"https://api.themoviedb.org/3/search/movie?api_key=a23088
 NSString *baseImageURL = @"https://image.tmdb.org/t/p/";
 NSString *genresURL = @"https://api.themoviedb.org/3/genre/movie/list?api_key=a23088f8339f956b04f1b7064ddd50f8";
 
-+ (NSString *) fetchGenres: (Movie *) movie {
++ (void) fetchGenresFrom: (Movie *) movie withHandler:(void (^)(NSString *)) handler {
     NSURL *url = [NSURL URLWithString: genresURL];
-    NSMutableString *str = [NSMutableString stringWithCapacity: 100];
+    NSMutableString *resultedString = [NSMutableString stringWithCapacity: 100];
 
     [[NSURLSession.sharedSession dataTaskWithURL: url
                                completionHandler: ^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
@@ -39,25 +39,29 @@ NSString *genresURL = @"https://api.themoviedb.org/3/genre/movie/list?api_key=a2
             NSLog(@"S>Failed to serialize data into JSON: %@", err);
         }
         
-        NSArray *results = resultJSON[@"results"];
+        NSArray *genresJSON = resultJSON[@"genres"];
  
         NSMutableDictionary *genres = [[NSMutableDictionary alloc] initWithCapacity: 20];
         
-        for (NSDictionary *genre in results) {
+        for (NSDictionary *genre in genresJSON) {
             [genres setObject: genre[@"name"] forKey: genre[@"id"]];
         }
         
         for (NSNumber *genre in movie.genres) {
-            [str appendString: genres[genre]];
-            [str appendString: @", "];
+            NSString *genreFound = genres[genre];
+            
+            if (genreFound != nil) {
+                [resultedString appendString: genreFound];
+                [resultedString appendString: @", "];
+            }
         }
         
-        if (str.length > 0) {
-            [str deleteCharactersInRange: NSMakeRange(0, 3)];
+        if (resultedString.length > 0) {
+            [resultedString deleteCharactersInRange: NSMakeRange(resultedString.length - 2, 2)];
         }
     }] resume];
     
-    return str;
+     handler(resultedString);
 }
 
 + (NSString *) searchURLWithQuery:(NSString *)query {
