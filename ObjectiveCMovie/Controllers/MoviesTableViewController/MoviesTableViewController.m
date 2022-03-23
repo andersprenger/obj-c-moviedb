@@ -36,19 +36,16 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     self.title = @"Movies";
+    
+    UIView *statusBar = [[UIView alloc]initWithFrame:[UIApplication sharedApplication].keyWindow.windowScene.statusBarManager.statusBarFrame] ;
+    statusBar.backgroundColor = [UIColor secondarySystemBackgroundColor];
+    [[UIApplication sharedApplication].keyWindow addSubview:statusBar];
+    
     self.navigationController.navigationBar.prefersLargeTitles = YES;
-    
-    
-    [self setupLayout];
     
     [self setupSearchBar];
     
     [self loadMovies];
-}
-
-- (void)setupLayout {
-    self.view.backgroundColor = UIColor.secondarySystemBackgroundColor;
-
 }
 
 - (void)setupSearchBar {
@@ -106,7 +103,6 @@
     
     self.currentSearchingTask = [MovieDBService searchForMovieWithQuery:query
                                                           andHandler:^(NSMutableArray *movies) {
-        
         [self.searchedMovies addObjectsFromArray:movies];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -202,55 +198,16 @@
 }
 
 // MARK: - Prepare for Segue
-
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     DetailsViewController *movieDetailViewController = [segue destinationViewController];
     movieDetailViewController.movie = self.selectedMovie;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
+// MARK: - TextField Delegate
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
     return YES;
 }
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 
 // MARK: - SearchBar Delegate

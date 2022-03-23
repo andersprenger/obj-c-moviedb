@@ -18,8 +18,7 @@
 // MARK: - Lifecycle
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"Movie Detail";
-    self.view.backgroundColor = UIColor.secondarySystemBackgroundColor;
+    self.title = @"Details";
     
     [self fillDetailsWithMovie:self.movie];
     
