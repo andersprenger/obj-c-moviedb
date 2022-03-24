@@ -30,12 +30,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
     self.title = @"Movies";
     
     UIView *statusBar = [[UIView alloc]initWithFrame:[UIApplication sharedApplication].keyWindow.windowScene.statusBarManager.statusBarFrame] ;
@@ -47,7 +41,12 @@
     [self setupSearchBar];
     [self loadMovies];
     
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl.attributedTitle = [[NSAttributedString alloc]init];
+    
+    
     self.genresDictionary = [MovieDBService fetchGenres];
+    
 }
 
 - (void)setupSearchBar {
@@ -178,7 +177,7 @@
     }
     Movie *movie = movies[indexPath.row];
     
-    [cell configureMovieData:movie];
+    [cell configureMovieData: movie];
     
     return cell;
 }
