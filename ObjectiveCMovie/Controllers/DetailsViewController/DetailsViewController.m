@@ -37,11 +37,22 @@
     NSString *roundedRatingString = [NSString stringWithFormat:@"%.01f",roundRatingFloat];
     self.rating.text = roundedRatingString;
     
-    [MovieDBService fetchGenresOf: movie withHandler:^(NSString * resultedString) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.genres.text = resultedString;
-        });
-    }];
+    NSMutableString *genresText = [NSMutableString stringWithCapacity: 50];
+    
+    for (NSNumber *genre in movie.genres) {
+        NSString *genreFound = _genresDictionary[genre];
+        
+        if (genreFound != nil) {
+            [genresText appendString: genreFound];
+            [genresText appendString: @", "];
+        }
+    }
+    
+    if (genresText.length > 0) {
+        [genresText deleteCharactersInRange: NSMakeRange(genresText.length - 2, 2)];
+    }
+    
+    self.genres.text = genresText;
     
     [MovieDBService fetchPosterOf:movie withHandler:^(UIImage *image) {
         dispatch_async(dispatch_get_main_queue(), ^{

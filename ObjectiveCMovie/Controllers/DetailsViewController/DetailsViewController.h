@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: - Variable
 @property (nonatomic) Movie *movie;
+@property (nonatomic) NSDictionary *genresDictionary;
 
 
 @end
