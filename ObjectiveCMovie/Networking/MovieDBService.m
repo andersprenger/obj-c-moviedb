@@ -5,7 +5,7 @@
 //  Created by Giovani Nícolas Bettoni on 21/03/22.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "MovieDBService.h"
 
 @interface MovieDBService()
@@ -19,10 +19,10 @@ static NSCache *imageCache;
 NSString *popularMoviesBaseUrl = @"https://api.themoviedb.org/3/movie/popular?api_key=a23088f8339f956b04f1b7064ddd50f8";
 NSString *nowPlayingMoviesBaseUrl = @"https://api.themoviedb.org/3/movie/now_playing?api_key=a23088f8339f956b04f1b7064ddd50f8";
 NSString *searchUrl = @"https://api.themoviedb.org/3/search/movie?api_key=a23088f8339f956b04f1b7064ddd50f8";
-NSString *baseImageURL = @"https://image.tmdb.org/t/p/";
+NSString *baseImageURL = @"https://image.tmdb.org/t/p/original";
 NSString *genresURL = @"https://api.themoviedb.org/3/genre/movie/list?api_key=a23088f8339f956b04f1b7064ddd50f8";
 
-+ (void) fetchGenresFrom: (Movie *) movie withHandler:(void (^)(NSString *)) handler {
++ (void) fetchGenresOf: (Movie *) movie withHandler:(void (^)(NSString *)) handler {
     NSURL *url = [NSURL URLWithString: genresURL];
     NSMutableString *resultedString = [NSMutableString stringWithCapacity: 100];
 
@@ -63,6 +63,23 @@ NSString *genresURL = @"https://api.themoviedb.org/3/genre/movie/list?api_key=a2
     
      handler(resultedString);
 }
+
++ (void) fetchPosterOf: (Movie *) movie withHandler:(void (^)(UIImage * image)) handler {
+    NSMutableString *urlString = [NSMutableString stringWithCapacity: 50];
+    [urlString appendString: baseImageURL];
+    [urlString appendString: movie.urlImage];
+    NSURL *url = [NSURL URLWithString: urlString];
+    [[NSURLSession.sharedSession dataTaskWithURL: url
+                               completionHandler: ^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (data == nil) return;
+        
+        UIImage *loadedImage = [UIImage imageWithData: data];
+        
+        handler(loadedImage);
+        
+    }] resume];
+}
+
 
 + (NSString *) searchURLWithQuery:(NSString *)query {
     return [NSString stringWithFormat:@"%@&query=%@", searchUrl, query];

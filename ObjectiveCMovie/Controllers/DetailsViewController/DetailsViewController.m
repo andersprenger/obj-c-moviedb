@@ -37,9 +37,15 @@
     NSString *roundedRatingString = [NSString stringWithFormat:@"%.01f",roundRatingFloat];
     self.rating.text = roundedRatingString;
     
-    [MovieDBService fetchGenresFrom: movie withHandler:^(NSString * resultedString) {
+    [MovieDBService fetchGenresOf: movie withHandler:^(NSString * resultedString) {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.genres.text = resultedString;
+        });
+    }];
+    
+    [MovieDBService fetchPosterOf:movie withHandler:^(UIImage *image) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.poster.image = image;
         });
     }];
 }
