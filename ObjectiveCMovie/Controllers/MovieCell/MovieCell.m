@@ -40,12 +40,12 @@
     float roundRatingFloat = roundf(10 * movie.rating.floatValue) / 10;
     NSString *roundedRatingString = [NSString stringWithFormat:@"%.01f",roundRatingFloat];
     self.rating.text = roundedRatingString;
+
+    NSCache *imageCache = [MovieDBService imageCache];
     
-    [MovieDBService fetchPosterOf: movie withHandler:^(UIImage *image) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.poster.image = image;
-        });
-    }];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.poster.image = [imageCache objectForKey: movie.urlImage];
+    });
 }
 
 @end

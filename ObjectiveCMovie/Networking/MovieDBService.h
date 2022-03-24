@@ -10,21 +10,19 @@
 
 #import "Movie.h"
 
-#endif /* MovieDBService_h */
+#endif
 
-typedef enum {
-    small,
-    medium,
-    large
-} ImageSize;
+@interface MovieDBService: NSObject
 
-@interface MovieDBService : NSObject
+@property (nonatomic) NSCache *posterCache;
+
 + (void) fetchPopularMoviesWithHandler:(void (^)(NSMutableArray *))handler;
 + (void) fetchNowPlayingMoviesWithHandler:(void (^)(NSMutableArray *))handler;
 + (NSString *) searchURLWithQuery:(NSString *)query;
 + (NSDictionary *) fetchGenres;
 + (void) fetchPosterOf: (Movie *) movie withHandler:(void (^)(UIImage * image)) handler ;
-//+ (NSURLSessionTask *) fetchMovieImageDataFromPath:(NSString *)movieImagePath andSize:(ImageSize) imageSize andHandler:(void (^)(NSData *))handler;
 + (NSURLSessionTask *) searchForMovieWithQuery:(NSString *)query andHandler:(void (^)(NSMutableArray *))handler;
++ (NSURLSessionTask *) fetchMoviesWithHandler: (NSURL *) url andHandler: (void (^) (NSMutableArray *)) handler;
++ (NSCache *) imageCache;
 
 @end
