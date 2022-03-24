@@ -21,6 +21,7 @@
 @property (strong, nonatomic) UISearchController *searchBarController;
 @property (nonatomic) BOOL shouldDisplaySearch;
 @property (strong, nonatomic) NSURLSessionTask *currentSearchingTask;
+@property (strong, nonatomic) NSDictionary *genresDictionary;
 
 @end
 
@@ -44,8 +45,9 @@
     self.navigationController.navigationBar.prefersLargeTitles = YES;
     
     [self setupSearchBar];
-    
     [self loadMovies];
+    
+    self.genresDictionary = [MovieDBService fetchGenres];
 }
 
 - (void)setupSearchBar {
@@ -201,6 +203,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     DetailsViewController *movieDetailViewController = [segue destinationViewController];
     movieDetailViewController.movie = self.selectedMovie;
+    movieDetailViewController.genresDictionary = _genresDictionary;
 }
 
 // MARK: - TextField Delegate

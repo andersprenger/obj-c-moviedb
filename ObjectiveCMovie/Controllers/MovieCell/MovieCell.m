@@ -6,6 +6,7 @@
 //
 
 #import "MovieCell.h"
+#import "MovieDBService.h"
 
 @interface MovieCell()
 
@@ -40,8 +41,11 @@
     NSString *roundedRatingString = [NSString stringWithFormat:@"%.01f",roundRatingFloat];
     self.rating.text = roundedRatingString;
     
-    
-    
+    [MovieDBService fetchPosterOf: movie withHandler:^(UIImage *image) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.poster.image = image;
+        });
+    }];
 }
 
 @end
