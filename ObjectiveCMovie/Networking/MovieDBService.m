@@ -12,7 +12,7 @@
 
 @end
 
-static NSCache *imageCache;
+static NSCache *_imageCache;
 
 @implementation MovieDBService
 
@@ -21,6 +21,14 @@ NSString *nowPlayingMoviesBaseUrl = @"https://api.themoviedb.org/3/movie/now_pla
 NSString *searchUrl = @"https://api.themoviedb.org/3/search/movie?api_key=a23088f8339f956b04f1b7064ddd50f8";
 NSString *baseImageURL = @"https://image.tmdb.org/t/p/original";
 NSString *genresURL = @"https://api.themoviedb.org/3/genre/movie/list?api_key=a23088f8339f956b04f1b7064ddd50f8";
+
++ (NSCache *) imageCache {
+    if (!_imageCache) {
+        _imageCache = NSCache.new;
+    }
+    
+    return _imageCache;
+}
 
 + (NSDictionary *) fetchGenres {
     NSURL *url = [NSURL URLWithString: genresURL];
@@ -89,6 +97,14 @@ NSString *genresURL = @"https://api.themoviedb.org/3/genre/movie/list?api_key=a2
             movie = [movie initWithDictionary:movieDictionary];
             
             [movies addObject: movie];
+        }
+        
+        NSCache * cache = [self imageCache];
+        
+        for (Movie * movie in movies) {
+            [self fetchPosterOf: movie withHandler:^(UIImage *image) {
+                [cache setObject: image forKey: movie.urlImage];
+            }];
         }
         
         handler(movies);

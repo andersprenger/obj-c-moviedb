@@ -23,5 +23,6 @@
 + (void) fetchPosterOf: (Movie *) movie withHandler:(void (^)(UIImage * image)) handler ;
 + (NSURLSessionTask *) searchForMovieWithQuery:(NSString *)query andHandler:(void (^)(NSMutableArray *))handler;
 + (NSURLSessionTask *) fetchMoviesWithHandler: (NSURL *) url andHandler: (void (^) (NSMutableArray *)) handler;
++ (NSCache *) imageCache;
 
 @end
