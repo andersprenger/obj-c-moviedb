@@ -27,6 +27,8 @@
 
 @implementation MoviesTableViewController
 
+int page;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -43,10 +45,9 @@
     
     self.refreshControl = [[UIRefreshControl alloc] init];
     self.refreshControl.attributedTitle = [[NSAttributedString alloc]init];
-    
+    [self.refreshControl addTarget: self action: @selector(loadMovies) forControlEvents: UIControlEventValueChanged];
     
     self.genresDictionary = [MovieDBService fetchGenres];
-    
 }
 
 - (void)setupSearchBar {
@@ -69,7 +70,6 @@
     self.navigationItem.searchController = self.searchBarController;
 }
 
-
 - (void)loadMovies {
     self.popularMovies = NSMutableArray.new;
     self.nowPlayingMovies = NSMutableArray.new;
@@ -83,8 +83,8 @@
     }];
     
     dispatch_group_enter(group);
-    [MovieDBService fetchNowPlayingMoviesWithHandler:^(NSMutableArray *movies) {
-        [self.nowPlayingMovies addObjectsFromArray:movies];
+    [MovieDBService fetchNowPlayingMoviesByPage: nil withHandler:^(NSMutableArray *movies) {
+        [self.nowPlayingMovies addObjectsFromArray: movies];
         dispatch_group_leave(group);
     }];
     
@@ -93,6 +93,10 @@
         self.shouldDisplaySearch = NO;
         [self.tableView reloadData];
     });
+    
+    page = 1;
+    
+    [self.refreshControl endRefreshing];
 }
 
 - (void)searchForMovieWithQuery:(NSString *)query {
@@ -231,6 +235,22 @@
     }
     
     [self searchForMovieWithQuery:searchText];
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    CGFloat currentOffset = scrollView.contentOffset.y;
+    CGFloat maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
+    
+    if (maximumOffset - currentOffset <= 50) {
+        page++;
+        
+        [MovieDBService fetchNowPlayingMoviesByPage: [NSNumber numberWithInt: page] withHandler:^(NSMutableArray * movies) {
+            [self.nowPlayingMovies addObjectsFromArray: movies];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+            });
+        }];
+    }
 }
 
 @end

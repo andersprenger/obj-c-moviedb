@@ -30,52 +30,36 @@ NSString *genresURL = @"https://api.themoviedb.org/3/genre/movie/list?api_key=a2
     return _imageCache;
 }
 
-+ (NSDictionary *) fetchGenres {
-    NSURL *url = [NSURL URLWithString: genresURL];
-    NSMutableDictionary *genres = [[NSMutableDictionary alloc] initWithCapacity: 20];
-    
-    [[NSURLSession.sharedSession dataTaskWithURL: url
-                               completionHandler: ^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (data == nil) {
-            return;
-        }
-        
-        NSError *err;
-        NSDictionary *resultJSON = [NSJSONSerialization JSONObjectWithData: data options: NSJSONReadingAllowFragments error: &err];
-        
-        if (err) {
-            NSLog(@"S>Failed to serialize data into JSON: %@", err);
-        }
-        
-        NSArray *genresJSON = resultJSON[@"genres"];
-        
-        for (NSDictionary *genre in genresJSON) {
-            [genres setObject: genre[@"name"] forKey: genre[@"id"]];
-        }
-    }] resume];
-    
-    return genres;
-}
-
-+ (void) fetchPosterOf: (Movie *) movie withHandler:(void (^) (UIImage * image)) handler {
-    NSMutableString *urlString = [NSMutableString stringWithCapacity: 50];
-    [urlString appendString: baseImageURL];
-    [urlString appendString: movie.urlImage];
-    
-    NSURL *url = [NSURL URLWithString: urlString];
-    [[NSURLSession.sharedSession dataTaskWithURL: url
-                               completionHandler: ^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (data == nil) return;
-        
-        UIImage *loadedImage = [UIImage imageWithData: data];
-        
-        handler(loadedImage);
-        
-    }] resume];
-}
-
 + (NSString *) searchURLWithQuery:(NSString *) query {
     return [NSString stringWithFormat:@"%@&query=%@", searchUrl, query];
+}
+
++ (void) fetchNowPlayingMoviesByPage: (NSNumber *) page withHandler: (void (^) (NSMutableArray *)) handler {
+    if (!page) {
+        page = @1;
+    }
+    
+    NSMutableString *urlString = [NSMutableString stringWithString: nowPlayingMoviesBaseUrl];
+    [urlString appendString: @"&page="];
+    [urlString appendString: page.stringValue];
+    
+    NSURL *url = [NSURL URLWithString: urlString];
+    [self fetchMoviesWithHandler: url andHandler: handler];
+}
+
++ (void) fetchPopularMoviesWithHandler: (void (^) (NSMutableArray *)) handler {
+    NSURL *url = [NSURL URLWithString: popularMoviesBaseUrl];
+    [self fetchMoviesWithHandler: url andHandler: handler];
+}
+
++ (NSURLSessionTask *) searchForMovieWithQuery: (NSString *) query andHandler: (void (^)(NSMutableArray *)) handler {
+    NSString *charactersToEscape = @"!*';:()@&^,+$/?%#[]<> ";
+    NSCharacterSet *allowedCharacters = [[NSCharacterSet characterSetWithCharactersInString:charactersToEscape]invertedSet];
+    NSString *encodedQuery = [query stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacters];
+    
+    NSURL *url = [NSURL URLWithString: [self searchURLWithQuery:encodedQuery]];
+    
+    return [self fetchMoviesWithHandler: url andHandler: handler];
 }
 
 + (NSURLSessionTask *) fetchMoviesWithHandler: (NSURL *) url andHandler: (void (^) (NSMutableArray *)) handler {
@@ -115,24 +99,48 @@ NSString *genresURL = @"https://api.themoviedb.org/3/genre/movie/list?api_key=a2
     return session;
 }
 
-+ (void) fetchNowPlayingMoviesWithHandler: (void (^) (NSMutableArray *)) handler {
-    NSURL *url = [NSURL URLWithString: nowPlayingMoviesBaseUrl];
-    [self fetchMoviesWithHandler: url andHandler: handler];
++ (void) fetchPosterOf: (Movie *) movie withHandler:(void (^) (UIImage * image)) handler {
+    NSMutableString *urlString = [NSMutableString stringWithCapacity: 50];
+    [urlString appendString: baseImageURL];
+    [urlString appendString: movie.urlImage];
+    
+    NSURL *url = [NSURL URLWithString: urlString];
+    [[NSURLSession.sharedSession dataTaskWithURL: url
+                               completionHandler: ^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (data == nil) return;
+        
+        UIImage *loadedImage = [UIImage imageWithData: data];
+        
+        handler(loadedImage);
+        
+    }] resume];
 }
 
-+ (void) fetchPopularMoviesWithHandler: (void (^) (NSMutableArray *)) handler {
-    NSURL *url = [NSURL URLWithString: popularMoviesBaseUrl];
-    [self fetchMoviesWithHandler: url andHandler: handler];
-}
-
-+ (NSURLSessionTask *) searchForMovieWithQuery: (NSString *) query andHandler: (void (^)(NSMutableArray *)) handler {
-    NSString *charactersToEscape = @"!*';:()@&^,+$/?%#[]<> ";
-    NSCharacterSet *allowedCharacters = [[NSCharacterSet characterSetWithCharactersInString:charactersToEscape]invertedSet];
-    NSString *encodedQuery = [query stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacters];
++ (NSDictionary *) fetchGenres {
+    NSURL *url = [NSURL URLWithString: genresURL];
+    NSMutableDictionary *genres = [[NSMutableDictionary alloc] initWithCapacity: 20];
     
-    NSURL *url = [NSURL URLWithString: [self searchURLWithQuery:encodedQuery]];
+    [[NSURLSession.sharedSession dataTaskWithURL: url
+                               completionHandler: ^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (data == nil) {
+            return;
+        }
+        
+        NSError *err;
+        NSDictionary *resultJSON = [NSJSONSerialization JSONObjectWithData: data options: NSJSONReadingAllowFragments error: &err];
+        
+        if (err) {
+            NSLog(@"S>Failed to serialize data into JSON: %@", err);
+        }
+        
+        NSArray *genresJSON = resultJSON[@"genres"];
+        
+        for (NSDictionary *genre in genresJSON) {
+            [genres setObject: genre[@"name"] forKey: genre[@"id"]];
+        }
+    }] resume];
     
-    return [self fetchMoviesWithHandler: url andHandler: handler];
+    return genres;
 }
 
 @end

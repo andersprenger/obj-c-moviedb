@@ -54,11 +54,11 @@
     
     self.genres.text = genresText;
     
-    [MovieDBService fetchPosterOf:movie withHandler:^(UIImage *image) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.poster.image = image;
-        });
-    }];
+    NSCache *imageCache = [MovieDBService imageCache];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.poster.image = [imageCache objectForKey: movie.urlImage];
+    });
 }
 
 

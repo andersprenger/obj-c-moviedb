@@ -17,7 +17,7 @@
 @property (nonatomic) NSCache *posterCache;
 
 + (void) fetchPopularMoviesWithHandler:(void (^)(NSMutableArray *))handler;
-+ (void) fetchNowPlayingMoviesWithHandler:(void (^)(NSMutableArray *))handler;
++ (void) fetchNowPlayingMoviesByPage: (NSNumber *) page withHandler: (void (^) (NSMutableArray *)) handler ;
 + (NSString *) searchURLWithQuery:(NSString *)query;
 + (NSDictionary *) fetchGenres;
 + (void) fetchPosterOf: (Movie *) movie withHandler:(void (^)(UIImage * image)) handler ;
