@@ -27,6 +27,8 @@
 
 @implementation MoviesTableViewController
 
+int page;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -46,7 +48,6 @@
     [self.refreshControl addTarget: self action: @selector(loadMovies) forControlEvents: UIControlEventValueChanged];
     
     self.genresDictionary = [MovieDBService fetchGenres];
-    
 }
 
 - (void)setupSearchBar {
@@ -92,6 +93,8 @@
         self.shouldDisplaySearch = NO;
         [self.tableView reloadData];
     });
+    
+    page = 1;
     
     [self.refreshControl endRefreshing];
 }
@@ -232,6 +235,22 @@
     }
     
     [self searchForMovieWithQuery:searchText];
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    CGFloat currentOffset = scrollView.contentOffset.y;
+    CGFloat maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
+    
+    if (maximumOffset - currentOffset <= 50) {
+        page++;
+        
+        [MovieDBService fetchNowPlayingMoviesByPage: [NSNumber numberWithInt: page] withHandler:^(NSMutableArray * movies) {
+            [self.nowPlayingMovies addObjectsFromArray: movies];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+            });
+        }];
+    }
 }
 
 @end
