@@ -43,7 +43,7 @@
     
     self.refreshControl = [[UIRefreshControl alloc] init];
     self.refreshControl.attributedTitle = [[NSAttributedString alloc]init];
-    
+    [self.refreshControl addTarget: self action: @selector(loadMovies) forControlEvents: UIControlEventValueChanged];
     
     self.genresDictionary = [MovieDBService fetchGenres];
     
@@ -69,7 +69,6 @@
     self.navigationItem.searchController = self.searchBarController;
 }
 
-
 - (void)loadMovies {
     self.popularMovies = NSMutableArray.new;
     self.nowPlayingMovies = NSMutableArray.new;
@@ -83,8 +82,8 @@
     }];
     
     dispatch_group_enter(group);
-    [MovieDBService fetchNowPlayingMoviesWithHandler:^(NSMutableArray *movies) {
-        [self.nowPlayingMovies addObjectsFromArray:movies];
+    [MovieDBService fetchNowPlayingMoviesByPage: nil withHandler:^(NSMutableArray *movies) {
+        [self.nowPlayingMovies addObjectsFromArray: movies];
         dispatch_group_leave(group);
     }];
     
@@ -93,6 +92,8 @@
         self.shouldDisplaySearch = NO;
         [self.tableView reloadData];
     });
+    
+    [self.refreshControl endRefreshing];
 }
 
 - (void)searchForMovieWithQuery:(NSString *)query {

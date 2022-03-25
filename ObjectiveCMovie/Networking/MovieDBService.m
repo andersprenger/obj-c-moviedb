@@ -34,8 +34,16 @@ NSString *genresURL = @"https://api.themoviedb.org/3/genre/movie/list?api_key=a2
     return [NSString stringWithFormat:@"%@&query=%@", searchUrl, query];
 }
 
-+ (void) fetchNowPlayingMoviesWithHandler: (void (^) (NSMutableArray *)) handler {
-    NSURL *url = [NSURL URLWithString: nowPlayingMoviesBaseUrl];
++ (void) fetchNowPlayingMoviesByPage: (NSNumber *) page withHandler: (void (^) (NSMutableArray *)) handler {
+    if (!page) {
+        page = @1;
+    }
+    
+    NSMutableString *urlString = [NSMutableString stringWithString: nowPlayingMoviesBaseUrl];
+    [urlString appendString: @"&page="];
+    [urlString appendString: page.stringValue];
+    
+    NSURL *url = [NSURL URLWithString: urlString];
     [self fetchMoviesWithHandler: url andHandler: handler];
 }
 
